@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
+	xsi:schemaLocation="http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-2.0.xsd
+		http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.0.xsd
+		http://www.springframework.org/schema/integration/stream http://www.springframework.org/schema/integration/stream/spring-integration-stream-2.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:component-scan base-package="de.mpg.mis.neuesbibliothekssystem">
+		<context:exclude-filter expression=".*_Roo_.*" type="regex"/>
+		<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+		<context:exclude-filter expression="de.mpg.mis.neuesbibliothekssystem.dbmaster.remote.*" type="regex"/>
+	</context:component-scan>
+
+  <import resource="classpath*:META-INF/contextAkt.xml"/>
+  <import resource="classpath*:META-INF/dbmasterremoting-amqp/endpoint-client-config.xml"/>
+           
+  <bean id="boardRepresentation" class="de.mpg.mis.neuesbibliothekssystem.stacks.BoardRepresentationImpl" scope="prototype"/>
+  
+  <bean id="spineRepresentation" class="de.mpg.mis.neuesbibliothekssystem.stacks.SpineRepresentationImpl" scope="prototype">
+    <property name="isSpecial" value="false"/>
+    <property name="isDummy" value="false"/>
+  </bean>
+  
+  <bean id="bibliographicStatusHorizon" class="de.mpg.mis.neuesbibliothekssystem.stacks.BibliographicStatusImplSpring" scope="prototype"/>
+ 
+  <bean id="spineGetter" class="de.mpg.mis.neuesbibliothekssystem.stacks.SpineGetterImplSpring" lazy-init="true"/>
+  
+  <bean id="stackSorterUse" class="de.mpg.mis.neuesbibliothekssystem.stacks.StackSorterUseImpl" lazy-init="true" init-method="subscribe">
+    <property name="DBMaster" ref="dbmaster"/>
+    <property name="DBMasterIUDPubsubChannel" ref="dbmasterIUDpubsubChannel"/>
+    <property name="sorterIdentifier" value="1"/>
+	<property name="sorterFunction" value="1"/>
+	<property name="itemIdentifier" value="3"/>
+	<property name="successorFunction" value="1"/>
+	<property name="itemInfoIdentifier" value="9"/>
+	<property name="itemInfoFunction" value="1"/>
+	<property name="itemNumberIdentifier" value="4"/>
+	<property name="itemNumberFunction" value="2"/>
+	    <property name="dBEndpoint" ref="dbmaster"/>  
+  </bean>
+  
+  <bean id="spineGetterSorter" class="de.mpg.mis.neuesbibliothekssystem.stacks.SpineGetterSorterImpl" lazy-init="true">
+    <constructor-arg ref="stackSorterUse"/>
+  </bean>
+  
+  <bean id="shelfRepresentation" class="de.mpg.mis.neuesbibliothekssystem.stacks.ShelfRepresentationImplSpring" scope="prototype"/>
+  
+  <bean id="boardInformation" class="de.mpg.mis.neuesbibliothekssystem.stacks.BoardInformationImpl" scope="prototype"/>
+  
+</beans>

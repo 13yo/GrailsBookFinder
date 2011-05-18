@@ -1,0 +1,3 @@
+#Thu Apr 21 15:34:35 CEST 2011
+//com.springsource.sts.config.flow.coordinates\:http\://www.springframework.org/schema/integration\:/GrailsServer/grails-app/conf/spring/resources.xml=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<graph>\r\n<element clazz\="LoggingChannelAdapterModelElement" type\="logging-channel-adapter">\r\n<structure end\="3786" endstart\="3786" start\="3684" startend\="3786"/>\r\n<bounds height\="112" width\="116" x\="19" y\="17"/>\r\n</element>\r\n</graph>
+eclipse.preferences.version=1

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:graph="http://www.springframework.org/schema/data/graph"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xsi:schemaLocation="http://www.grails.org/schema/context http://grails.org/schema/context/grails-context.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-2.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+		http://www.springframework.org/schema/data/graph http://www.springframework.org/schema/data/graph/datagraph-1.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:annotation-config/>
+	<task:annotation-driven/>
+	<import resource="classpath*:/META-INF/dbmasterremoting-amqp/endpoint-client-config.xml"/>
+
+	<bean id="spineRepresentation" class="de.mpg.mis.neuesbibliothekssystem.stacks.SpineRepresentationImpl" scope="prototype">
+		<property name="isSpecial" value="false"/>
+		<property name="isDummy" value="false"/>
+	</bean>
+  
+	<bean id="bibliographicStatusHorizon" class="de.mpg.mis.neuesbibliothekssystem.stacks.BibliographicStatusImplSpring" scope="prototype"/>
+	
+	<bean id="spineGetter" class="de.mpg.mis.neuesbibliothekssystem.stacks.SpineGetterImplSpring" lazy-init="true"/>
+	 
+	<bean id="stackSorterUse" class="de.mpg.mis.neuesbibliothekssystem.stacks.StackSorterUseImpl" lazy-init="true" init-method="subscribe" destroy-method="onExit">
+		<property name="DBMaster" ref="dbmaster"/>
+		<property name="DBMasterIUDPubsubChannel" ref="dbmasterIUDpubsubChannel"/>
+		<property name="sorterIdentifier" value="1"/>
+		<property name="sorterFunction" value="1"/>
+		<property name="itemIdentifier" value="3"/>
+		<property name="successorFunction" value="1"/>
+		<property name="itemInfoIdentifier" value="9"/>
+		<property name="itemInfoFunction" value="1"/>
+		<property name="itemNumberIdentifier" value="4"/>
+		<property name="itemNumberFunction" value="2"/>
+		<property name="dBEndpoint" ref="dbmaster"/>  
+	</bean>
+
+	<bean id="spineGetterSorter" class="de.mpg.mis.neuesbibliothekssystem.stacks.SpineGetterSorterImpl" lazy-init="true">
+		<constructor-arg ref="stackSorterUse"/>
+	</bean>
+	
+	<bean id="maintainer" class="de.mpg.mis.neuesbibliothekssystem.stacks.StackSorterMaintainImpl" lazy-init="true" init-method="subscribe" destroy-method="onExit">
+		<property name="DBMaster" ref="dbmaster"/>
+		<property name="DBMasterIUDPubsubChannel" ref="dbmasterIUDpubsubChannel"/>
+		<property name="sorterIdentifier" value="1"/>
+		<property name="sorterFunction" value="1"/>
+		<property name="itemIdentifier" value="3"/>
+		<property name="successorFunction" value="1"/>
+		<property name="itemInfoIdentifier" value="9"/>
+		<property name="itemInfoFunction" value="1"/>
+		<property name="itemNumberIdentifier" value="4"/>
+		<property name="itemNumberFunction" value="2"/>
+	</bean>
+	
+	<bean id="doMaintain" class="de.mpg.mis.neuesbibliothekssystem.stacks.DoMaintain" lazy-init="true">
+		<property name="maintainer" ref="maintainer"/>
+	</bean>
+	
+	<int:logging-channel-adapter channel="dbmasterIUDpubsubChannel" level="INFO" log-full-message="true"/>
+
+</beans>

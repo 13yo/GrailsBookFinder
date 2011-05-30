@@ -96,7 +96,9 @@ log4j = {
 /**
  * AMQP
  */
-DBMaster.amqp.brokerURL="194.95.184.184"
+//DBMaster.amqp.brokerURL="194.95.184.184"
+DBMaster.amqp.brokerURL="amqp.kaatz.eu"
+DBMaster.amqp.brokerPort="8080"
 //DBMaster.amqp.brokerURL="escidoc3.nat"
 //DBMaster.amqp.brokerURL=escidoc4.nat
 //DBMaster.amqp.brokerURL=10.100.0.133

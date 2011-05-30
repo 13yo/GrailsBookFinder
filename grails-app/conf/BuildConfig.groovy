@@ -32,7 +32,7 @@ grails.project.dependency.resolution = {
 		compile 'com.google.zxing:core:1.6-SNAPSHOT'
 		compile 'com.google.zxing:javase:1.6-SNAPSHOT'
 
-		compile ('de.mpg.mis.neuesbibliothekssystem:dbmaster-remoting:0.11.3.RC3'){
+		compile ('de.mpg.mis.neuesbibliothekssystem:dbmaster-remoting:0.11.3.RC4'){
 			excludes ([ group: "org.slf4j" ], [ group: "org.springframework"])
 		}
 	}
